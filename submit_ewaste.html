@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Your E-Waste Donation - TechCycle</title>
+    <link rel="stylesheet" href="/UI_screens/styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <header role="banner">
+            <nav class="nav">
+                <a href="index.html" class="brand">TechCycle</a>
+                <a href="index.html#how-it-works" class="nav-link">How it Works</a>
+                <a href="submit_ewaste.html" class="nav-link">Donate E-Waste</a>
+                <a href="index.html#marketplace" class="nav-link">Marketplace</a>
+                <a href="index.html#contact" class="nav-link cta">Contact Us</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h1>Submit Your E-Waste Donation</h1>
+                <form id="ewaste-form" class="form">
+                    <div id="form-feedback" class="muted" style="text-align: center; margin-bottom: 1rem;"></div> 
+
+                    <label>Name:</label>
+                    <input type="text" name="user-name" required>
+
+                    <label>Email:</label>
+                    <input type="email" name="user-email" required>
+
+                    <label>Phone:</label>
+                    <input type="text" name="user-phone" required>
+
+                    <label for="item-name">Item Name:</label>
+                    <input type="text" id="item-name" name="item-name" required placeholder="e.g., Old Laptop, Broken Monitor">
+
+                    <label for="item-description">Description:</label>
+                    <textarea id="item-description" name="item-description" rows="3" required placeholder="Briefly describe the item-description and any known issues."></textarea>
+
+                    <label for="item-category">Category:</label>
+                    <select id="item-category" name="item-category" required>
+                        <option value="">Select Category</option>
+                        <option value="computers">Computers & Accessories</option>
+                        <option value="phones">Mobile Phones & Tablets</option>
+                        <option value="audio">Audio & Video Equipment</option>
+                        <option value="appliances">Small Appliances</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <label for="dropoff-date">Estimated Drop-off Date:</label>
+                    <input type="date" id="dropoff-date" name="dropoff-date" required>
+
+
+                    <button type="submit" class="button primary">Submit Donation</button>
+                    <p class="muted">By submitting, you agree to drop off your e-waste at our center within 7 days.</p>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-inner">
+                <p>&copy; 2026 TechCycle. All rights reserved.</p>
+                <nav class="nav">
+                    <a href="index.html#privacy">Privacy Policy</a>
+                    <a href="index.html#terms">Terms of Service</a>
+                    <a href="index.html#faq">FAQ</a>
+                </nav>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('ewaste-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const feedbackDiv = document.getElementById('form-feedback');
+            feedbackDiv.textContent = ''; // Clear previous feedback
+
+            const itemName = document.getElementById('item-name').value.trim();
+            const itemDescription = document.getElementById('item-description').value.trim();
+            const itemCategory = document.getElementById('item-category').value;
+            const dropoffDate = document.getElementById('dropoff-date').value;
+
+            if (!itemName || !itemDescription || !itemCategory || !dropoffDate) {
+                feedbackDiv.textContent = 'Please fill in all required fields.';
+                feedbackDiv.style.color = 'red'; // Style for error
+                return;
+            }
+
+            const formData = new FormData(form); // Use FormData to easily send form data
+
+            fetch('process_submission.php', { 
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                // Parse the JSON response from the server
+                return response.json();
+            })
+            .then(data => {
+                // Handle the JSON response from your PHP script
+                if (data.status === 'success') {
+                    // Redirect to the thank you page on success
+                    window.location.href = 'thankyou.html';
+                } else {
+                    // Display error message from the server
+                    feedbackDiv.textContent = data.message || 'An unknown error occurred. Please try again.';
+                    feedbackDiv.style.color = 'red'; // Style for error
+                }
+            })
+            .catch(error => {
+                // Handle errors during the fetch operation (network issues, parsing errors)
+                console.error('Fetch error:', error);
+                feedbackDiv.textContent = 'Could not connect to the server. Please check your internet connection or try again later.';
+                feedbackDiv.style.color = 'red';
+            });
+        });
+    </script>
+</body>
+</html>
