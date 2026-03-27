@@ -1,57 +1,75 @@
-<?php include __DIR__ . '/nav.php' ?>
+<?php 
+include __DIR__ . '/nav.php';
 
-<section class="hero product-marketplace">
-    <h2>Eco-Swap Marketplace</h2>
-    <p>Trade your items with others in the community.</p>
-    <a href="createProduct.html" class="button primary">Create Listing</a>
+
+// Fetch logistics items
+$result = $conn->query("SELECT * FROM logistics ORDER BY created_at DESC");
+?>
+
+<section class="hero product-marketplace" style="
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    padding: 20px 20px; 
+    background: #f8f9fa; 
+    border-radius: 12px; 
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+"> 
+    <h2 style="
+        font-size: 2.5rem; 
+        color: #6cc551; 
+        margin-bottom: 10px;
+    ">E-Waste Logistics</h2> 
+    
+    <p style="
+        font-size: 1.1rem; 
+        color: #5a6268; 
+        max-width: 600px; 
+        margin-bottom: 5px;
+    ">Manage and monitor all e-waste items efficiently in one centralized dashboard.</p> 
+    
+    <a href="createLogistics.php" class="button primary" style="
+        text-decoration: none; 
+        padding: 12px 28px; 
+        background-color: #6cc551; 
+        color: white; 
+        border-radius: 6px; 
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    ">Create Listing</a> 
 </section>
-
 
 <main id="ecoswap">
     <section class="card">
         <div class="grid">
-            <!-- <?php
+
+            <?php
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo '<div class="card">';
-                    echo '<img src="' . htmlspecialchars($row['image_path']) . '" alt="Product Image" class="product-img">';
+                    
+                    echo '<img src="../' . htmlspecialchars($row['image_path']) . '" class="product-img">';
+                    
                     echo '<h3>' . htmlspecialchars($row['name']) . '</h3>';
+                    
                     echo '<p>' . htmlspecialchars($row['description']) . '</p>';
-                    echo '<a href="productDetails.php?id=' . $row['id'] . '" class="button ghost">View Details</a>';
+                    
+                    echo '<p><strong>Status:</strong> ' . $row['status'] . '</p>';
+
+                    echo '<a href="updateLogistics.php?id=' . $row['id'] . '" class="button primary">Edit</a>';
+                    
                     echo '</div>';
                 }
             } else {
-                echo '<p>No products available yet.</p>';
+                echo '<p>No logistics items found.</p>';
             }
-            ?> -->
-            <div class="card">
-                <img src="images/sample1.jpg" alt="Product Image" class="product-img">
-                <h3>Wooden Chair</h3>
-                <p>A sturdy wooden chair in good condition.</p>
-                <a href="productDetails.php?id=1" class="button ghost">View Details</a>
-            </div>
+            ?>
 
-            <div class="card">
-                <img src="images/sample2.jpg" alt="Product Image" class="product-img">
-                <h3>Mountain Bike</h3>
-                <p>A well-maintained mountain bike, perfect for off-road trails.</p>
-                <a href="productDetails.php?id=2" class="button ghost">View Details</a>
-            </div>
-
-            <div class="card">
-                <img src="images/sample3.jpg" alt="Product Image" class="product-img">
-                <h3>Kitchen Table</h3>
-                <p>A spacious kitchen table that can seat six people.</p>
-                <a href="productDetails.php?id=3" class="button ghost">View Details</a>
-            </div>
-
-            <div class="card">
-                <img src="images/sample4.jpg" alt="Product Image" class="product-img">
-                <h3>Bookshelf</h3>
-                <p>A tall bookshelf with multiple shelves for storage.</p>
-                <a href="productDetails.php?id=4" class="button ghost">View Details</a>
-            </div>
         </div>
     </section>
 </main>
-<?php include __DIR__ . '/footer.php' ?>
+
+<?php include __DIR__ . '/footer.php'; ?>

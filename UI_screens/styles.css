@@ -77,6 +77,7 @@ nav {
     grid-area: nav;
     width: 100vw;
     position: sticky;
+    align-items: center;
     top: 0;
     z-index: 1000;
 }
@@ -170,9 +171,10 @@ header[role="banner"] {
     letter-spacing: .3px;
 }
 
-.nav-link {
-    padding: .5rem .75rem;
-    border-radius: 10px;
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
 .nav-link:hover,
@@ -219,8 +221,8 @@ header[role="banner"] {
         display: block;
     }
 
-    .nav.active .nav-links {
-        max-height: 300px;
+    .nav-links.active {
+        max-height: 600px;
     }
 
     /* Perfect X */
@@ -604,7 +606,6 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    /* Space between text elements */
 }
 
 /* Optional: muted text inside product info */
@@ -622,7 +623,6 @@ h2 {
     /* Align button to left */
 }
 
-/* Optional: ensure responsive images elsewhere */
 .card img,
 .hero img,
 .upload-area img {
@@ -645,14 +645,14 @@ h2 {
 }
 
 .hero-cards .card:hover {
-    background: #6fe67b; /* light green */
-    transform: translateY(-4px); /* slight lift */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    background: #6fe67b;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .button-group {
     display: flex;
-    gap: 0.5rem; /* space between buttons */
+    gap: 0.5rem;
     margin-top: 0.5rem;
 }
 
@@ -665,13 +665,13 @@ h2 {
     padding: 1.2rem;
     border-radius: 16px;
     background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
 .card h3 {
@@ -682,3 +682,131 @@ h2 {
 .card p {
     margin: 0.2rem 0;
 }
+
+/* ===============================
+   Related Products Section
+   =============================== */
+.related-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.related-slider {
+    display: flex;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+.related-card {
+    min-width: 200px;
+    margin: 10px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.related-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+}
+
+/* Arrows on far left and right */
+.arrow {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    background: #2c3e50;
+    color: white;
+    border: none;
+    font-size: 22px;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.arrow.left {
+    left: -20px;
+}
+
+.arrow.right {
+    right: -20px;
+}
+
+.arrow:hover {
+    background: #34495e;
+}
+
+/* End of Related Products Section */
+
+/* ===============================
+   Profile Circle with Dropdown
+   =============================== */
+.profile-wrapper {
+    position: relative;
+    display: flex;
+    /* changed from inline-block */
+    align-items: center;
+    /* vertically center with navbar links */
+    margin-left: 15px;
+}
+
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #2c3e50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+    overflow: hidden;
+}
+
+.profile-circle img.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background-color: #fff;
+    min-width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.profile-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+
+.profile-wrapper.active .profile-dropdown {
+    display: block;
+}
+
+/* End of Profile Circle */

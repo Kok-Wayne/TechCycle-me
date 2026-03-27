@@ -28,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['role'] = $row['role']; 
 
             // Redirect based on user role
-            if ($row['user_role'] === 'admin') {
-                header("Location: ../adminCommunityApproval.php");
-            } elseif ($row['user_role'] === 'worker') {
-                header("Location: ../workerDashboard.php");
+            if ($row['role'] === 'admin') {
+                header("Location: ../UI_screens/adminHome.php");
+            } elseif ($row['role'] === 'worker') {
+                header("Location: ../UI_screens/workerHome.php");
             } else {
                 header("Location: ../UI_screens/userHome.php");
             }
