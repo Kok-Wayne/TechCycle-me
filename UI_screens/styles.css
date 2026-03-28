@@ -810,3 +810,122 @@ h2 {
 }
 
 /* End of Profile Circle */
+
+/* ===============================
+   Notifications Page
+   =============================== */
+
+.notif-wrapper {
+    padding: 1.25rem;
+}
+
+.notif-tab-container {
+    display: flex;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.notif-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    border-right: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.6rem 1rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.notif-tab:last-child {
+    border-right: none;
+}
+
+.notif-tab.active {
+    background: var(--green-dark);
+    color: #fff;
+}
+
+.notif-tab:not(.active):hover {
+    background: #f1f5f1;
+    color: var(--text-dark);
+}
+
+.notif-group {
+    margin-bottom: 1.25rem;
+}
+
+.notif-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: #f1f5f1;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-dark);
+    user-select: none;
+}
+
+.notif-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.notif-group-header.open .notif-arrow {
+    transform: rotate(90deg);
+}
+
+.notif-group-body {
+    border-left: 2px solid #e5e7eb;
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+}
+
+.notif-item {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fafafa;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-product {
+    margin: 0 0 0.2rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--green-dark);
+}
+
+.notif-message {
+    margin: 0 0 0.3rem;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    text-align: left;
+}
+
+.notif-unread {
+    font-weight: 700;
+}
+
+.notif-timestamp {
+    margin: 0;
+    font-size: 0.8rem;
+    text-align: left;
+    color: var(--text-muted);
+}
+
+.notif-empty {
+    padding: 1.5rem 0;
+    color: var(--text-muted);
+}
+
+/* End of Notifications Page */

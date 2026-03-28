@@ -9,82 +9,149 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
 $userID = $_SESSION['user_id'];
 
 $stmt = $conn->prepare(
-    "SELECT n.notificationID, n.message, n.type, n.createdAt,
+    "SELECT n.notificationID, n.message, n.createdAt, n.isRead,
             u.username AS workerName,
             p.productName
      FROM notifications n
      LEFT JOIN users    u ON u.id        = n.userID
      LEFT JOIN products p ON p.productID = n.productID
-     WHERE n.triggeredUserID = ? AND n.isRead = 0
+     WHERE n.triggeredUserID = ? AND n.type = 'user'
      ORDER BY n.createdAt DESC"
 );
 $stmt->bind_param("i", $userID);
 $stmt->execute();
-$result     = $stmt->get_result();
-$notifCount = $result->num_rows;
+$result = $stmt->get_result();
 $stmt->close();
+
+$allGroups = [
+    'Today'      => [],
+    'Yesterday'  => [],
+    'This Week'  => [],
+    'Last Week'  => [],
+    'This Month' => [],
+    'Last Month' => [],
+    'This Year'  => [],
+    'Last Year'  => [],
+    'Others'     => [],
+];
+
+$now       = new DateTime();
+$today     = new DateTime('today');
+$yesterday = new DateTime('yesterday');
+
+while ($row = $result->fetch_assoc()) {
+    $date = new DateTime($row['createdAt']);
+
+    if ($date >= $today) {
+        $allGroups['Today'][] = $row;
+    } elseif ($date >= $yesterday) {
+        $allGroups['Yesterday'][] = $row;
+    } elseif ($date >= new DateTime('monday this week')) {
+        $allGroups['This Week'][] = $row;
+    } elseif ($date >= new DateTime('monday last week')) {
+        $allGroups['Last Week'][] = $row;
+    } elseif ($date->format('Y-m') === $now->format('Y-m')) {
+        $allGroups['This Month'][] = $row;
+    } elseif ($date->format('Y-m') === (new DateTime('first day of last month'))->format('Y-m')) {
+        $allGroups['Last Month'][] = $row;
+    } elseif ($date->format('Y') === $now->format('Y')) {
+        $allGroups['This Year'][] = $row;
+    } elseif ($date->format('Y') === (string)((int)$now->format('Y') - 1)) {
+        $allGroups['Last Year'][] = $row;
+    } else {
+        $allGroups['Others'][] = $row;
+    }
+}
+
+$unreadGroups = [];
+foreach ($allGroups as $groupName => $items) {
+    $unread = array_filter($items, fn($r) => $r['isRead'] == 0);
+    if (!empty($unread)) {
+        $unreadGroups[$groupName] = array_values($unread);
+    }
+}
+
+$unreadCount = array_sum(array_map('count', $unreadGroups));
+
+function renderGroups($groups) {
+    $total = array_sum(array_map('count', $groups));
+    if ($total === 0) {
+        echo '<p class="muted notif-empty">No notifications.</p>';
+        return;
+    }
+    foreach ($groups as $groupName => $items) {
+        if (empty($items)) continue;
+        ?>
+        <div class="notif-group">
+            <div class="notif-group-header" onclick="toggleGroup(this)">
+                <span class="notif-arrow">&#8250;</span>
+                <span><?= $groupName ?></span>
+            </div>
+            <div class="notif-group-body" style="display:none;">
+                <?php foreach ($items as $row): ?>
+                    <div class="notif-item">
+                        <?php if (!empty($row['productName'])): ?>
+                            <p class="notif-product"><?= htmlspecialchars($row['productName']) ?></p>
+                        <?php endif; ?>
+                        <p class="notif-message <?= $row['isRead'] == 0 ? 'notif-unread' : '' ?>">
+                            <?= htmlspecialchars($row['message']) ?>
+                        </p>
+                        <p class="notif-timestamp">
+                            <?php if (!empty($row['workerName'])): ?>
+                                From: <?= htmlspecialchars($row['workerName']) ?> &nbsp;·&nbsp;
+                            <?php endif; ?>
+                            <?= htmlspecialchars($row['createdAt']) ?>
+                        </p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+    }
+}
 ?>
 
-<style>
-    body { min-height: 100vh; display: flex; flex-direction: column; }
-    main { flex: 1; }
-</style>
+<main id="content" style="display:flex; flex-direction:column; min-height:calc(100vh - 60px);">
 
-<main id="content">
+    <div class="notif-wrapper" style="flex:1;">
 
-    <section class="hero" aria-label="Notifications">
-        <div>
-            <h1>My Notifications</h1>
-            <?php if ($notifCount > 0): ?>
-                <p class="muted">You have <?= $notifCount ?> notification<?= $notifCount > 1 ? 's' : '' ?>.</p>
-            <?php endif; ?>
+        <h1>My Notifications</h1>
+
+        <!-- Tabs -->
+        <div class="notif-tab-container">
+            <button class="notif-tab active" onclick="switchTab('all', this)">All</button>
+            <button class="notif-tab" onclick="switchTab('unread', this)">
+                Unread<?php if ($unreadCount > 0): ?> (<?= $unreadCount ?>)<?php endif; ?>
+            </button>
         </div>
-    </section>
 
-    <section style="margin-top: 1.5rem;">
+        <!-- All tab -->
+        <div id="tab-all">
+            <?php renderGroups($allGroups); ?>
+        </div>
 
-        <?php if ($notifCount > 0): ?>
+        <!-- Unread tab -->
+        <div id="tab-unread" style="display:none;">
+            <?php renderGroups($unreadGroups); ?>
+        </div>
 
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <div class="card" style="margin-bottom: 1rem;">
-
-                    <?php if (!empty($row['productName'])): ?>
-                        <p style="margin: 0 0 0.25rem; font-weight: 600; color: var(--green-dark);">
-                            <?= htmlspecialchars($row['productName']) ?>
-                        </p>
-                    <?php endif; ?>
-
-                    <p style="margin: 0 0 0.5rem 0;">
-                        <?= htmlspecialchars($row['message']) ?>
-                    </p>
-
-                    <p class="muted" style="margin: 0 0 0.75rem; font-size: 0.85rem;">
-                        <?php if (!empty($row['workerName'])): ?>
-                            From: <?= htmlspecialchars($row['workerName']) ?>
-                            &nbsp;·&nbsp;
-                        <?php endif; ?>
-                        <?= htmlspecialchars($row['createdAt']) ?>
-                    </p>
-
-                    <form method="POST" action="../PHP_files/dismissnotification.php">
-                        <input type="hidden" name="notificationID" value="<?= htmlspecialchars($row['notificationID']) ?>">
-                        <input type="hidden" name="redirect" value="viewUserNotificationsPage.php">
-                        <button type="submit" class="button ghost">Dismiss</button>
-                    </form>
-
-                </div>
-            <?php endwhile; ?>
-
-        <?php else: ?>
-
-            <div class="card">
-                <p class="muted">No new notifications.</p>
-            </div>
-
-        <?php endif; ?>
-
-    </section>
+    </div>
 
 </main>
+
+<script>
+function toggleGroup(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-all').style.display    = tab === 'all'    ? 'block' : 'none';
+    document.getElementById('tab-unread').style.display = tab === 'unread' ? 'block' : 'none';
+}
+</script>
 
 <?php include __DIR__ . '/footer.php'; ?>

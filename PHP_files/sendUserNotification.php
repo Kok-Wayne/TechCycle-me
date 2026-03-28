@@ -1,6 +1,6 @@
 <?php
 // ============================================================
-// sendCollectionNotification.php  —  Process 4: Collected Notification
+// sendUserNotification.php  —  Process 4: Collected Notification
 // ============================================================
 // userID          = worker (SENDER)
 // triggeredUserID = user (RECEIVER)
