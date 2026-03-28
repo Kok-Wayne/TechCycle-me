@@ -1,139 +1,204 @@
 <?php
-// 🔹 Run logic only when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+header("Content-Type: application/json");
 
-    $conn = new mysqli("localhost", "root", "", "techcycle_database");
+// 🔹 Database connection
+$conn = new mysqli("localhost", "root", "", "techcycle_database");
 
-    if ($conn->connect_error) {
-        die("Database connection failed");
-    }
+// Check connection
+if ($conn->connect_error) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Database connection failed"
+    ]);
+    exit;
+}
 
-    $action = $_POST['action'] ?? '';
+// 🔹 Ensure POST request
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Invalid request method"
+    ]);
+    exit;
+}
 
-    if ($action == "send_location") {
+// 🔹 Determine action
+$action = $_POST['action'] ?? '';
+
+switch ($action) {
+
+    case "send_location":
         sendLocation($conn);
-    } elseif ($action == "update_status") {
+        break;
+
+    case "update_status":
         updateStatus($conn);
-    }
+        break;
+
+    default:
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid action"
+        ]);
 }
 
 // ================= FUNCTION 2 =================
 function sendLocation($conn) {
 
-    // 2.1 Receive Location Details
-    $itemName = $_POST['item_name'];
-    $category = $_POST['category'];
-    $location = $_POST['location'];
-    $dropoff  = $_POST['dropoff_date'];
+    // 🔹 2.1 Receive Location Details
+    $itemName = trim($_POST['item_name'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $location = trim($_POST['location'] ?? '');
+    $dropoff  = $_POST['dropoff_date'] ?? '';
 
-    // 2.2 Validate
-    if (!$itemName || !$category || !$location || !$dropoff) {
-        echo "<p style='color:red;'>All fields required</p>";
+    // 🔹 2.2 Validate Input
+    if (empty($itemName) || empty($category) || empty($location) || empty($dropoff)) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "All fields are required"
+        ]);
         return;
     }
 
-    // Validate category (D1)
-    $check = $conn->prepare("SELECT * FROM ewaste_categories WHERE category_name=?");
+    // 🔹 Validate date
+    if (strtotime($dropoff) < strtotime(date("Y-m-d"))) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Drop-off date cannot be in the past"
+        ]);
+        return;
+    }
+
+    // 🔹 Validate category (D1)
+    $check = $conn->prepare("SELECT id FROM ewaste_categories WHERE category_name = ?");
+    if (!$check) {
+        echo json_encode(["status" => "error", "message" => "Server error (category check)"]);
+        return;
+    }
+
     $check->bind_param("s", $category);
     $check->execute();
     $result = $check->get_result();
 
-    if ($result->num_rows == 0) {
-        echo "<p style='color:red;'>Invalid category</p>";
+    if ($result->num_rows === 0) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid category selected"
+        ]);
         return;
     }
 
-    // 2.3 Store (D2)
+    // 🔹 2.3 Store Location Information (D2)
     $stmt = $conn->prepare("
         INSERT INTO ewaste_submissions 
-        (item_name, category, location, estimated_dropoff_date)
-        VALUES (?, ?, ?, ?)
+        (item_name, category, location, estimated_dropoff_date, status, submission_time)
+        VALUES (?, ?, ?, ?, 'Pending', NOW())
     ");
+
+    if (!$stmt) {
+        echo json_encode(["status" => "error", "message" => "Server error (prepare failed)"]);
+        return;
+    }
+
     $stmt->bind_param("ssss", $itemName, $category, $location, $dropoff);
 
     if ($stmt->execute()) {
-        // 2.4 Confirmation
-        echo "<p style='color:green;'>Location submitted successfully!</p>";
+        // 🔹 2.4 Send Location Confirmation
+        echo json_encode([
+            "status" => "success",
+            "message" => "Location submitted successfully",
+            "submission_id" => $conn->insert_id
+        ]);
     } else {
-        echo "<p style='color:red;'>Insert failed</p>";
+        echo json_encode([
+            "status" => "error",
+            "message" => "Failed to store data"
+        ]);
     }
+
+    $stmt->close();
 }
 
 // ================= FUNCTION 5 =================
 function updateStatus($conn) {
 
-    // 5.1 Receive Request
-    $id = $_POST['submission_id'];
-    $status = $_POST['status'];
+    // 🔹 5.1 Receive Status Update Request
+    $submissionId = $_POST['submission_id'] ?? '';
+    $newStatus    = trim($_POST['status'] ?? '');
 
-    // 5.2 Retrieve Current Status
-    $stmt = $conn->prepare("SELECT status FROM ewaste_submissions WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows == 0) {
-        echo "<p style='color:red;'>Record not found</p>";
+    if (empty($submissionId) || empty($newStatus)) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Missing required fields"
+        ]);
         return;
     }
 
-    // 5.3 Update Status
-    $update = $conn->prepare("UPDATE ewaste_submissions SET status=? WHERE id=?");
-    $update->bind_param("si", $status, $id);
+    // 🔹 Validate status
+    $allowedStatus = ["Pending", "Collected", "Recycled"];
+
+    if (!in_array($newStatus, $allowedStatus)) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid status value"
+        ]);
+        return;
+    }
+
+    // 🔹 5.2 Retrieve Current Status (D2)
+    $stmt = $conn->prepare("SELECT status FROM ewaste_submissions WHERE id = ?");
+    if (!$stmt) {
+        echo json_encode(["status" => "error", "message" => "Server error (retrieve failed)"]);
+        return;
+    }
+
+    $stmt->bind_param("i", $submissionId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Submission not found"
+        ]);
+        return;
+    }
+
+    $row = $result->fetch_assoc();
+    $currentStatus = $row['status'];
+
+    // 🔹 5.3 Update E-Waste Status
+    $update = $conn->prepare("
+        UPDATE ewaste_submissions 
+        SET status = ? 
+        WHERE id = ?
+    ");
+
+    if (!$update) {
+        echo json_encode(["status" => "error", "message" => "Server error (update failed)"]);
+        return;
+    }
+
+    $update->bind_param("si", $newStatus, $submissionId);
 
     if ($update->execute()) {
-        // 5.4 Notify
-        echo "<p style='color:green;'>Status updated successfully!</p>";
+        // 🔹 5.4 Notify Stakeholders
+        echo json_encode([
+            "status" => "success",
+            "message" => "Status updated successfully",
+            "old_status" => $currentStatus,
+            "new_status" => $newStatus
+        ]);
     } else {
-        echo "<p style='color:red;'>Update failed</p>";
+        echo json_encode([
+            "status" => "error",
+            "message" => "Failed to update status"
+        ]);
     }
+
+    $stmt->close();
+    $update->close();
 }
+
+$conn->close();
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>E-Waste Management</title>
-</head>
-<body>
-
-<h2>Send E-Waste Materials Location</h2>
-<form method="POST">
-    <input type="hidden" name="action" value="send_location">
-
-    Item Name: <input type="text" name="item_name"><br><br>
-
-    Category:
-    <select name="category">
-        <option>Computers & Accessories</option>
-        <option>Mobile Phones & Tablets</option>
-        <option>Batteries</option>
-    </select><br><br>
-
-    Location: <input type="text" name="location"><br><br>
-
-    Drop-off Date: <input type="date" name="dropoff_date"><br><br>
-
-    <button type="submit">Submit Location</button>
-</form>
-
-<hr>
-
-<h2>Update E-Waste Status</h2>
-<form method="POST">
-    <input type="hidden" name="action" value="update_status">
-
-    Submission ID: <input type="number" name="submission_id"><br><br>
-
-    Status:
-    <select name="status">
-        <option>Pending</option>
-        <option>Collected</option>
-        <option>Recycled</option>
-    </select><br><br>
-
-    <button type="submit">Update Status</button>
-</form>
-
-</body>
-</html>

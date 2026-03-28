@@ -79,3 +79,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $check_stmt->close();
     $conn->close();
 }
+?>

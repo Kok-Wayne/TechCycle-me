@@ -1,3 +1,5 @@
+<?php include __DIR__. '/../php_files/dbConnection.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
