@@ -1,7 +1,6 @@
 <?php
 include __DIR__ . '/nav.php';
 
-// Only users can access this page
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header("Location: login.php");
     exit();
@@ -9,8 +8,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
 
 $userID = $_SESSION['user_id'];
 
-// triggeredUserID = user (receiver)
-// userID = worker (sender)
 $stmt = $conn->prepare(
     "SELECT n.notificationID, n.message, n.type, n.createdAt,
             u.username AS workerName,
@@ -28,18 +25,19 @@ $notifCount = $result->num_rows;
 $stmt->close();
 ?>
 
+<style>
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    main { flex: 1; }
+</style>
+
 <main id="content">
 
     <section class="hero" aria-label="Notifications">
         <div>
             <h1>My Notifications</h1>
-            <p class="muted">
-                <?php if ($notifCount > 0): ?>
-                    You have <?= $notifCount ?> notification<?= $notifCount > 1 ? 's' : '' ?>.
-                <?php else: ?>
-                    You are all caught up.
-                <?php endif; ?>
-            </p>
+            <?php if ($notifCount > 0): ?>
+                <p class="muted">You have <?= $notifCount ?> notification<?= $notifCount > 1 ? 's' : '' ?>.</p>
+            <?php endif; ?>
         </div>
     </section>
 
