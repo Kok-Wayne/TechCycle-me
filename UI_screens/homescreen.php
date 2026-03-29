@@ -1,4 +1,4 @@
-<?php include __DIR__ . '/b4loginnav.php' ?>
+<?php include __DIR__ . '/preLoginNav.php' ?>
 <!-- Main -->
     <main id="content">
         <!-- Hero -->
@@ -27,26 +27,26 @@
         <section id="features" class="grid" aria-label="Key features">
             <article class="card">
                 <h3>Recycling Centre</h3>
-                <p class="muted">Look up local recycling rules, pickup days, and how to participate correctly.</p>
-                <a class="button ghost" href="/recycling">View schedules</a>
+                <p class="muted">Drop off your e-waste at designated centres! or create new designated centres for other users.</p>
+                <a class="button ghost" href="register.php">Find a recycling centre</a>
             </article>
 
             <article class="card">
                 <h3>Marketplace</h3>
-                <p class="muted">Actionable steps for home and office: LEDs, standby killers, and more.</p>
-                <a class="button ghost" href="/tips">Browse tips</a>
+                <p class="muted">Get unwanted E-waste through the marketplace for free!</p>
+                <a class="button ghost" href="register.php">Browse marketplace</a>
             </article>
 
             <article class="card">
                 <h3>Point Systems</h3>
-                <p class="muted">Join gardens, attend events, and share seasonal planting advice.</p>
-                <a class="button ghost" href="/gardening">Find a garden</a>
+                <p class="muted">Gain points through E-waste drop off and use them for marketplace purchases.</p>
+                <a class="button ghost" href="register.php">Check your points</a>
             </article>
 
             <article class="card" id="swap">
                 <h3>Join Today!</h3>
-                <p class="muted">Give items a second life. List, browse, and trade with neighbors.</p>
-                <a class="button ghost" href="swapMarketplace.html">Start trading</a>
+                <p class="muted">Make the earth greener!</p>
+                <a class="button ghost" href="register.php">Sign Up</a>
             </article>
         </section>
 

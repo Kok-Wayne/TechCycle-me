@@ -1,4 +1,5 @@
 <?php
+
 // ============================================================
 // sendWorkerNotification.php  —  Process 3: Send Notification
 // ============================================================
@@ -64,8 +65,6 @@ $message = "You have been assigned a new e-waste pickup. "
          . "Product ID: {$productID}.";
 
 // Insert notification
-// userID = sender (admin/recycling centre)
-// triggeredUserID = receiver (worker)
 $notifID = 'WN-' . uniqid();
 
 $insert = $conn->prepare(

@@ -1,106 +1,112 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:8000"); 
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit(0);
-}
+$conn = new mysqli("localhost", "root", "", "techcycle_database");
 
-
-// 3. Database Credentials
-$dbHost     = 'localhost';
-$dbUsername = 'root';      
-$dbPassword = '';         
-$dbName     = 'ecocycle_db'; 
-
-// 4. Email Configuration (for sending notifications)
-$adminEmail = 'your-admin-email@example.com'; 
-$siteName   = 'EcoCycle';
-
-// ** Function to send JSON response **
-function sendResponse($status, $message = '', $data = []) {
-    header('Content-Type: application/json');
-    echo json_encode(['status' => $status, 'message' => $message, 'data' => $data]);
-    exit;
-}
-
-// ** Basic Server-Side Validation **
-// Check if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    sendResponse('error', 'Invalid request method.');
-}
-
-// Sanitize and retrieve form data
-$itemName        = filter_input(INPUT_POST, 'item_name', FILTER_SANITIZE_STRING);
-$itemDescription = filter_input(INPUT_POST, 'condition', FILTER_SANITIZE_STRING);
-$itemCategory    = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_STRING);
-$dropoffDate     = filter_input(INPUT_POST, 'dropoff_date', FILTER_SANITIZE_STRING); // Date format needs server-side check
-
-// Check if required fields are present and not empty after sanitization
-if (empty($itemName) || empty($itemDescription) || empty($itemCategory) || empty($dropoffDate)) {
-    sendResponse('error', 'All fields are required.');
-}
-
-// More specific validation for date (e.g., check format, if it's in the past)
-// Using strtotime for a basic check if it's a valid date string
-if (strtotime($dropoffDate) === false) {
-    sendResponse('error', 'Invalid date format provided.');
-}
-
-// ** Database Connection **
-$conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
-
-// Check connection
 if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    sendResponse('error', 'Database connection failed. Please try again later.');
+    echo json_encode([
+        "status" => "error",
+        "message" => "Database connection failed"
+    ]);
+    exit();
 }
 
-$stmt = $conn->prepare("INSERT INTO ewaste_submissions (item_name, item_description, category, estimated_dropoff_date, submission_time) VALUES (?, ?, ?, ?, NOW())");
+// Get form data
+$userName = $_POST['user-name'] ?? '';
+$userEmail = $_POST['user-email'] ?? '';
+$userPhone = $_POST['user-phone'] ?? '';
+$itemName = $_POST['item-name'] ?? '';
+$itemDescription = $_POST['item-description'] ?? '';
+$itemCategory = $_POST['item-category'] ?? '';
+$condition = $_POST['condition'] ?? '';
+$dropoffDate = $_POST['dropoff-date'] ?? '';
 
-if ($stmt === false) {
-    error_log("SQL prepare failed: " . $conn->error);
-    sendResponse('error', 'Server error preparing data. Please try again.');
+// Validation
+if (
+    empty($userName) || empty($userEmail) || empty($userPhone) ||
+    empty($itemName) || empty($itemDescription) ||
+    empty($itemCategory) || empty($condition) || empty($dropoffDate)
+) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "All fields are required"
+    ]);
+    exit();
 }
 
-$stmt->bind_param('ssss', $itemName, $itemDescription, $itemCategory, $dropoffDate);
+// Date validation
+if (strtotime($dropoffDate) < strtotime(date('Y-m-d'))) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Drop-off date cannot be in the past"
+    ]);
+    exit();
+}
 
-if ($stmt->execute()) {
-    $submissionId = $conn->insert_id; 
+// Check if user exists
+$checkUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$checkUser->bind_param("s", $userEmail);
+$checkUser->execute();
+$result = $checkUser->get_result();
 
-    // ** Send Email Notification (Admin) **
-    $subjectAdmin = "New E-waste Submission Received - " . $siteName;
-    $messageAdmin = "A new e-waste item has been submitted:\n\n";
-    $messageAdmin .= "Item Name: " . htmlspecialchars($itemName) . "\n";
-    $messageAdmin .= "Description: " . htmlspecialchars($itemDescription) . "\n";
-    $messageAdmin .= "Category: " . htmlspecialchars($itemCategory) . "\n";
-    $messageAdmin .= "Estimated Drop-off Date: " . htmlspecialchars($dropoffDate) . "\n";
-    $messageAdmin .= "Submission ID: " . $submissionId . "\n";
-    $messageAdmin .= "Submitted on: " . date('Y-m-d H:i:s') . "\n";
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $userId = $row['id'];
+} else {
 
-    $headersAdmin = "From: no-reply@" . $_SERVER['HTTP_HOST'] . "\r\n";
-    $headersAdmin .= "Reply-To: no-reply@" . $_SERVER['HTTP_HOST'] . "\r\n";
-    $headersAdmin .= "X-Mailer: PHP/" . phpversion();
+    $defaultPassword = password_hash("temp123", PASSWORD_DEFAULT);
 
-    // Use mail() function. For production, consider libraries like PHPMailer for better control.
-    if (!mail($adminEmail, $subjectAdmin, $messageAdmin, $headersAdmin)) {
-        error_log("Failed to send admin email for submission ID: " . $submissionId);
-        // Don't fail the whole submission if email fails, but log it.
+    $insertUser = $conn->prepare("
+        INSERT INTO users (username, email, password, phonenumber)
+        VALUES (?, ?, ?, ?)
+    ");
+
+    $insertUser->bind_param("ssss", $userName, $userEmail, $defaultPassword, $userPhone);
+
+    if (!$insertUser->execute()) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Error creating user: " . $insertUser->error
+        ]);
+        exit();
     }
 
-    // ** Success Response **
-    sendResponse('success', 'Submission recorded successfully!');
-
-    // Close statement and connection
-    $stmt->close();
-    $conn->close();
-
-} else {
-    // Log this error on the server for debugging!
-    error_log("SQL execution failed: " . $stmt->error);
-    sendResponse('error', 'Failed to save submission. Please try again.');
-    $stmt->close();
-    $conn->close();
+    $userId = $insertUser->insert_id;
+    $insertUser->close();
 }
+
+$checkUser->close();
+
+$stmt = $conn->prepare("
+    INSERT INTO ewaste_donations
+    (user_id, item_name, item_description, item_category, item_condition, dropoff_date, status)
+    VALUES (?, ?, ?, ?, ?, ?, 'Pending')
+");
+
+$stmt->bind_param(
+    "isssss",
+    $userId,
+    $itemName,
+    $itemDescription,
+    $itemCategory,
+    $condition,
+    $dropoffDate
+);
+
+if ($stmt->execute()) {
+    echo json_encode([
+        "status" => "success",
+        "message" => "Submission saved successfully"
+    ]);
+} else {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Error saving data: " . $stmt->error
+    ]);
+}
+
+$stmt->close();
+$conn->close();
 ?>

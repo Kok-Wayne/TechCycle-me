@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update E-Waste Material Status - TechCycle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <header role="banner">
+            <nav class="nav">
+                <a href="index.html" class="brand">TechCycle</a>
+                <a href="index.html#how-it-works" class="nav-link">How it Works</a>
+                <a href="submit_ewaste.html" class="nav-link">Donate E-Waste</a>
+                <a href="index.html#marketplace" class="nav-link">Marketplace</a>
+                <a href="sendewastelocation.html" class="nav-link">Send E-Waste Location</a>
+                <a href="updateewastestatus.html" class="nav-link">Update Status</a>
+                <a href="index.html#contact" class="nav-link cta">Contact Us</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h1>Update E-Waste Material Status</h1>
+                <form id="statusForm" class="form">
+                    <div id="form-feedback" class="muted" style="text-align: center; margin-bottom: 1rem;"></div> 
+
+                    <label>Submission ID:</label>
+                    <input type="text" name="location" required>
+
+                        <label>Status:</label>
+                        <select name="status">
+                            <option>Pending</option>
+                            <option>Collected</option>
+                            <option>Recycled</option>
+                        </select>
+
+                    
+                    <button type="submit" class="button primary">Update Status</button>
+                    <p class="muted"></p>
+                </form>
+
+                <p id="statusMsg"></p>
+            </section>
+        </main>
+
+<script>
+document.getElementById("statusForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("http://localhost/update_ewaste_status.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+    });
+});
+</script>
+
+</body>
+</html>

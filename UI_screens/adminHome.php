@@ -20,7 +20,7 @@ $productCount = $conn->query("SELECT COUNT(*) as total FROM products")->fetch_as
         <div>
             <h1>Admin Dashboard</h1>
             <p>
-                Organise pickup sites, manage worker accounts, track website statistics, and manage logistics.
+                Organise pickup sites, manage worker accounts, track website statistics, and list available items.
             </p>
             <div class="actions">
                 <a class="button primary" href="#features">Dashboards and Reports</a>
@@ -57,7 +57,7 @@ $productCount = $conn->query("SELECT COUNT(*) as total FROM products")->fetch_as
         <article class="card">
             <h3>Recycling Centre</h3>
             <p class="muted">Check the recycling centres sites added!</p>
-            <a class="button ghost" href="/recycling">View address sites</a>
+            <a class="button ghost" href="recyclingCentre.php">View address sites</a>
         </article>
 
         <article class="card">
@@ -68,7 +68,7 @@ $productCount = $conn->query("SELECT COUNT(*) as total FROM products")->fetch_as
 
         <article class="card">
             <h3>Point Systems</h3>
-            <p class="muted">Join gardens, attend events, and share seasonal planting advice.</p>
+            <p class="muted">See who has the most points among each user.</p>
             <a class="button ghost" href="/gardening">Find a garden</a>
         </article>
 

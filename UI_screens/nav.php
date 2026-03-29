@@ -1,5 +1,5 @@
 <?php
-include __DIR__ . '/../php_files/dbConnection.php';
+include __DIR__ . '/../PHP_files/dbConnection.php';
 session_start();
 $role = $_SESSION['role'] ?? 'guest';
 
@@ -7,6 +7,18 @@ $role = $_SESSION['role'] ?? 'guest';
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php?error=not_logged_in");
     exit;
+}
+
+// Get profile image
+$profileImage = $_SESSION['profile_image'] ?? '';
+// Default fallback path
+$profilePath = '/TechCycle/Website_Images_Files/default-avatar.png';
+if (!empty($profileImage)) {
+    // Check if the file exists in Uploads
+    $fullPath = __DIR__ . '/../' . $profileImage;
+    if (file_exists($fullPath)) {
+        $profilePath = '/TechCycle/' . $profileImage . '?t=' . time();
+    }
 }
 ?>
 
@@ -17,6 +29,7 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechCycle</title>
+    <!-- Correct CSS path -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -33,10 +46,10 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="nav-links" id="nav-links">
-                    <?php if ($role == 'admin'): ?>
+                    <?php if ($role === 'admin'): ?>
                         <a href="adminHome.php">Admin Dashboard</a>
-                        <a href="manageUsers.php">Users</a>
                         <a href="manageWorkers.php">Workers</a>
+                        <a href="recyclingCentre.php">Recycling Centres</a>
                         <a href="reports.php">Reports</a>
                         <a href="adminLogistics.php">Logistics</a>
                         <div class="profile-wrapper">
@@ -59,7 +72,7 @@ if (!isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     <?php elseif ($role == 'worker'): ?>
-                        <a href="workerDashboard.php">Dashboard</a>
+                        <a href="workerHome.php">Dashboard</a>
                         <a href="pickups.php">Pickups</a>
                         <a href="inventory.php">Inventory</a>
                         <a href="viewWorkerNotificationsPage.php">Notifications</a>
@@ -83,29 +96,10 @@ if (!isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     <?php elseif ($role == 'user'): ?>
-                        <a href="userHome.php">Home</a>
+                        <a href="index.php">Home</a>
                         <a href="#features">Features</a>
                         <a href="recyclingCenters.php">Recycling Center</a>
                         <a href="marketplace.php">Marketplace</a>
-                        <div class="profile-wrapper">
-                            <div class="profile-circle" id="profileCircle">
-                                <?php
-                                $profileImage = $_SESSION['profile_image'] ?? '';
-                                if (!empty($profileImage) && file_exists("../uploads/profiles/$profileImage")) {
-                                    echo "<img src='../uploads/profiles/$profileImage' alt='Profile' class='profile-img'>";
-                                } else {
-                                    echo "<img src='../Website_Images_Files/default-avatar.png' alt='Profile' class='profile-img'>";
-                                }
-                                ?>
-                            </div>
-
-                            <div class="profile-dropdown" id="profileDropdown">
-                                <a href="userProfile.php">Settings</a>
-                                <a href="cart.php">Cart</a>
-                                <a href="viewUserNotificationsPage.php">Notifications</a>
-                                <a href="../php_files/logoutProcess.php">Logout</a>
-                            </div>
-                        </div>
                     <?php else: ?>
                         <a href="homescreen.php">Home</a>
                         <a href="#features">Features</a>
@@ -113,26 +107,39 @@ if (!isset($_SESSION['user_id'])) {
                         <a href="login.php">Marketplace</a>
                         <a class="cta" href="login.php">Sign in</a>
                     <?php endif; ?>
+
+                    <?php if ($role !== 'guest'): ?>
+                        <div class="profile-wrapper">
+                            <div class="profile-circle" id="profileCircle">
+                                <img src="<?= $profilePath ?>" alt="Profile" class="profile-img">
+                            </div>
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <a href="profileSettingsScreen.php">Settings</a>
+                                <?php if ($role !== 'worker') echo '<a href="cartScreen.php">Cart</a>'; ?>
+                                <a href="viewUserNotificationsPage.php">Notifications</a>
+                                <a href="../php_files/logoutProcess.php">Logout</a>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </nav>
         </div>
     </header>
 
     <script>
+        // Profile dropdown toggle
         const profileCircle = document.getElementById('profileCircle');
         if (profileCircle) {
             const profileWrapper = profileCircle.parentElement;
             profileCircle.addEventListener('click', () => {
                 profileWrapper.classList.toggle('active');
             });
-
             window.addEventListener('click', function(e) {
-                if (!profileWrapper.contains(e.target)) {
-                    profileWrapper.classList.remove('active');
-                }
+                if (!profileWrapper.contains(e.target)) profileWrapper.classList.remove('active');
             });
         }
 
+        // Hamburger menu toggle
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
         const profileDropdown = document.getElementById('profileDropdown');
@@ -141,12 +148,8 @@ if (!isset($_SESSION['user_id'])) {
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
 
-            // Only on mobile
             if (window.innerWidth <= 768 && profileDropdown) {
-                // Remove previous clones
                 document.querySelectorAll('.mobile-profile-link').forEach(e => e.remove());
-
-                // Clone links and prepend them at the top
                 Array.from(profileDropdown.children).forEach(link => {
                     const clone = link.cloneNode(true);
                     clone.classList.add('mobile-profile-link');
@@ -155,11 +158,10 @@ if (!isset($_SESSION['user_id'])) {
             }
         });
 
-        // Remove mobile clones on resize back to desktop
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
                 document.querySelectorAll('.mobile-profile-link').forEach(e => e.remove());
-                navLinks.classList.remove('active'); // collapse mobile menu if open
+                navLinks.classList.remove('active');
                 hamburger.classList.remove('active');
             }
         });

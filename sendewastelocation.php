@@ -57,6 +57,23 @@
             </section>
         </main>
 
-<script src="script.js"></script>
+<script>
+document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("http://localhost/send_ewaste_location.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(err => console.error(err));
+});
+</script>
+
 </body>
 </html>

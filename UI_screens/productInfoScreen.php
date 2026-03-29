@@ -1,7 +1,5 @@
-<?php include 'nav.php'; ?>
-
 <?php
-$conn = new mysqli("localhost", "root", "", "techcycle_database");
+include 'nav.php';
 
 $productID = $_GET['id'];
 $userID = $_SESSION['user_id'];
@@ -18,22 +16,23 @@ $productName = $product['productName'];
 $category = $product['category'];
 
 // Get related products in same category (excluding current product)
-$relatedSQL = "SELECT * FROM products 
-               WHERE category = '$category' 
-               AND productID != '$productID'";
+$relatedSQL = "SELECT productName, MIN(productID) as productID, productImage
+               FROM products
+               WHERE category = '$category'
+               AND productName != '$productName'
+               GROUP BY productName";
 
 $relatedResult = $conn->query($relatedSQL);
 $relatedCount = $relatedResult->num_rows;
 
 // Count how many items exist with same name
-$stockSQL = "SELECT COUNT(*) AS totalStock 
+$stockSQL = "SELECT COUNT(*) AS availableStock
              FROM products 
-             WHERE productName = '$productName'";
-
+             WHERE productName = '$productName'
+             AND status = 'Available'";
 $stockResult = $conn->query($stockSQL);
 $stockData = $stockResult->fetch_assoc();
-$totalStock = $stockData['totalStock'];
-
+$availableStock = $stockData['availableStock'];
 
 // Calculate total ordered
 $orderSQL = "SELECT SUM(quantity) AS totalOrdered
@@ -47,33 +46,28 @@ $orderResult = $conn->query($orderSQL);
 $orderData = $orderResult->fetch_assoc();
 $totalOrdered = $orderData['totalOrdered'] ?? 0;
 
-
-// Final available stock
-$availableStock = $totalStock - $totalOrdered;
-
 // Place order
 if (isset($_POST['placeOrder'])) {
     $quantity = (int) $_POST['quantity'];
 
     // Recalculate stock AGAIN (important to prevent cheating)
-    $stockSQL = "SELECT COUNT(*) AS totalStock 
-                 FROM products 
-                 WHERE productName = '$productName'";
+    $stockSQL = "SELECT COUNT(*) AS availableStock
+             FROM products 
+             WHERE productName = '$productName'
+             AND status = 'Available'";
     $stockResult = $conn->query($stockSQL);
     $stockData = $stockResult->fetch_assoc();
-    $totalStock = $stockData['totalStock'];
+    $availableStock = $stockData['availableStock'];
 
     $orderSQL = "SELECT SUM(quantity) AS totalOrdered
                  FROM orders
                  WHERE productID IN (
                      SELECT productID FROM products WHERE productName = '$productName'
                  )
-                 AND status IN ('Ordered','Preparing','Shipped')";
+                 AND status IN ('Cart','Ordered','Preparing','Shipped')";
     $orderResult = $conn->query($orderSQL);
     $orderData = $orderResult->fetch_assoc();
     $totalOrdered = $orderData['totalOrdered'] ?? 0;
-
-    $availableStock = $totalStock - $totalOrdered;
 
     if ($availableStock <= 0) {
         echo "<p>Out of stock.</p>";
@@ -84,9 +78,19 @@ if (isset($_POST['placeOrder'])) {
     } elseif ($quantity < 1) {
         echo "<p>Invalid quantity.</p>";
     } else {
+        // Insert order
         $orderSQL = "INSERT INTO orders (userID, productID, status, quantity)
-                     VALUES ('$userID', '$productID', 'Cart', '$quantity')";
+             VALUES ('$userID', '$productID', 'Cart', '$quantity')";
         $conn->query($orderSQL);
+
+        // Set selected number of same products to Unavailable
+        $updateStockSQL = "UPDATE products 
+                   SET status = 'Unavailable'
+                   WHERE productName = '$productName'
+                   AND status = 'Available'
+                   LIMIT $quantity";
+
+        $conn->query($updateStockSQL);
         echo "<p>Item added to cart!</p>";
         header("Refresh:1");
     }
@@ -107,7 +111,15 @@ if (isset($_POST['placeOrder'])) {
                 <h2><?php echo $product['productName']; ?></h2>
                 <img src="/TechCycle/<?php echo $product['productImage']; ?>" class="product-image">
                 <p><strong>Category:</strong> <?php echo $product['category']; ?></p>
-                <p><strong>Status:</strong> <?php echo $product['status']; ?></p>
+                <p><strong>Status:</strong>
+                    <?php
+                    if ($availableStock > 0) {
+                        echo "Available";
+                    } else {
+                        echo "Unavailable";
+                    }
+                    ?>
+                </p>
                 <p><strong>Stock Available:</strong> <?php echo $availableStock; ?></p>
                 <form method="POST">
                     <label>Quantity:</label>

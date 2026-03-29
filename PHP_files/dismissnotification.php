@@ -24,7 +24,6 @@ if (empty($notificationID)) {
 }
 
 // Security: only allow dismissing YOUR OWN notifications
-// triggeredUserID = receiver (the logged in user)
 $stmt = $conn->prepare("SELECT notificationID FROM notifications WHERE notificationID = ? AND triggeredUserID = ?");
 $stmt->bind_param("si", $notificationID, $loggedInUserID);
 $stmt->execute();

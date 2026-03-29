@@ -1,8 +1,8 @@
 <?php
-header("Content-Type: application/json");
+session_start();
+include __DIR__ . '/dbConnection.php';
 
-// 🔹 DB connection
-$conn = new mysqli("localhost", "root", "", "ecocycle_db");
+header("Content-Type: application/json");
 
 if ($conn->connect_error) {
     echo json_encode(["status" => "error", "message" => "Database connection failed"]);
