@@ -812,6 +812,317 @@ h2 {
 /* End of Profile Circle */
 
 /* ===============================
+   Collection Tasks Page (viewWorkerNotificationsPage)
+   =============================== */
+
+.pickups-wrapper {
+    padding: 1.5rem 1.25rem 2.5rem;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.pickups-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 0 0 0.2rem;
+}
+
+.pickups-subtitle {
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    margin: 0 0 1.4rem;
+}
+
+/* Tab bar */
+.pickup-tab-container {
+    display: flex;
+    border: 1.5px solid #d1d5db;
+    border-radius: 12px;
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 1.1rem;
+}
+
+.pickup-tab {
+    background: none;
+    border: none;
+    border-right: 1.5px solid #d1d5db;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.55rem 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background 0.16s, color 0.16s;
+}
+
+.pickup-tab:last-child {
+    border-right: none;
+}
+
+.pickup-tab.active {
+    background: var(--green-dark);
+    color: #fff;
+}
+
+.pickup-tab:not(.active):hover {
+    background: #f0f5f0;
+    color: var(--text-dark);
+}
+
+.pickup-tab .tab-badge {
+    font-size: 0.74rem;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 0.08rem 0.5rem;
+    background: rgba(255, 255, 255, 0.22);
+    color: inherit;
+}
+
+.pickup-tab:not(.active) .tab-badge {
+    background: #e2ece2;
+    color: var(--green-dark);
+}
+
+/* Search */
+.pickup-search-wrap {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.pickup-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.pickup-search {
+    width: 100%;
+    padding: 0.65rem 1rem 0.65rem 2.5rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 0.93rem;
+    outline: none;
+    background: #fff;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.pickup-search:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(82, 173, 156, 0.18);
+}
+
+/* Product card */
+.pickup-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.65rem;
+    transition: box-shadow 0.18s, border-color 0.18s;
+}
+
+.pickup-item:hover {
+    box-shadow: 0 4px 16px rgba(68, 118, 4, 0.09);
+    border-color: #c3d9a0;
+}
+
+.pickup-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.pickup-item-name {
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pickup-item-location {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.28rem;
+}
+
+.pickup-item-location svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    color: var(--teal);
+}
+
+.pickup-item-ts {
+    font-size: 0.76rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 0.28rem;
+    margin-top: 0.05rem;
+}
+
+.pickup-item-ts svg {
+    width: 12px;
+    height: 12px;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.pickup-cat {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--teal);
+    background: #e8f7f4;
+    border-radius: 20px;
+    padding: 0.08rem 0.45rem;
+    margin-top: 0.18rem;
+    width: fit-content;
+    text-transform: capitalize;
+}
+
+/* Product image */
+.pickup-item-img {
+    width: 62px;
+    height: 62px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    background: #f3f4f6;
+}
+
+.pickup-item-placeholder {
+    width: 62px;
+    height: 62px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e8f5e0, #d1ecb9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #e5e7eb;
+}
+
+.pickup-item-placeholder svg {
+    width: 26px;
+    height: 26px;
+    color: var(--green-leaf);
+}
+
+/* Group header (completed only) */
+.pickup-group {
+    margin-bottom: 0.85rem;
+}
+
+.pickup-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 0.85rem;
+    background: #f3f7f0;
+    border: 1px solid #e0e7d8;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.86rem;
+    color: var(--forest-grey);
+    user-select: none;
+    margin-bottom: 0.45rem;
+}
+
+.pickup-group-arrow {
+    font-size: 0.95rem;
+    transition: transform 0.18s;
+    display: inline-block;
+}
+
+.pickup-group-header.open .pickup-group-arrow {
+    transform: rotate(90deg);
+}
+
+.pickup-group-count {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.pickup-group-body {
+    padding-left: 0.4rem;
+}
+
+/* Empty state */
+.pickup-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+.pickup-empty svg {
+    width: 44px;
+    height: 44px;
+    color: #d1d5db;
+    margin: 0 auto 0.65rem;
+    display: block;
+}
+
+.pickup-empty p {
+    font-size: 0.92rem;
+    margin: 0;
+}
+
+/* No-results message */
+.pickup-no-results {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    display: none;
+}
+
+/* Panels */
+.pickup-panel {
+    display: none;
+}
+
+.pickup-panel.active {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .pickup-item-img,
+    .pickup-item-placeholder {
+        width: 50px;
+        height: 50px;
+    }
+
+    .pickups-wrapper {
+        padding: 1rem 0.75rem;
+    }
+}
+
+/* End of Collection Tasks Page */
+
+/* ===============================
    Notifications Page
    =============================== */
 
