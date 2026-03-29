@@ -391,7 +391,7 @@ function confirmCollect() {
     var formData = new FormData();
     formData.append('productID', <?= $productID ?>);
 
-    fetch('markProductCollected.php', {
+    fetch('../PHP_files/markProductCollected.php', {
         method: 'POST',
         body: formData
     })
