@@ -3,7 +3,7 @@ include __DIR__ . '/nav.php';
 
 
 // Fetch logistics items
-$result = $conn->query("SELECT * FROM products ORDER BY createdAt DESC");
+$result = $conn->query("SELECT * FROM products WHERE pickupStatus = 'collected'");
 ?>
 
 <section class="hero product-marketplace" style="

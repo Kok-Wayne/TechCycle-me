@@ -16,8 +16,8 @@
         <?php include 'nav.php'; ?>
     </header>
 
-    <main>
-        <section class="ewaste-form-card">
+    <main class="thank-you-main">
+        <section class="ewaste-form-card thank-you-card">
             <h1>Thank You!</h1>
 
             <p class="muted">Your e-waste submission has been successfully recorded.</p>
@@ -28,7 +28,7 @@
                 <a href="submit_ewaste.php" class="button primary">Submit Another Item</a>
             </div>
         </section>
-    </main>
+    </main>    
 
     <aside>
         <div class="callout">

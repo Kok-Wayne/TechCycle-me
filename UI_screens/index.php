@@ -8,8 +8,8 @@
                 through our community marketplace.</p>
             <div class="actions">
                 <!-- This button now links to the form page -->
-                <a href="submit_ewaste.html" class="button primary">Donate E-Waste</a>
-                <a href="index.html#marketplace" class="button ghost">Explore Items</a>
+                <a href="dropoffRecyclingCentreSelection.php" class="button primary">Donate E-Waste</a>
+                <a href="marketplace.php" class="button ghost">Explore Items</a>
             </div>
         </div>
         <div class="hero-image">
@@ -39,33 +39,6 @@
         </div>
     </section>
 
-    <!-- Marketplace and other sections remain here -->
-    <section id="marketplace" class="grid">
-        <h2>Featured E-Waste Items</h2>
-        <!-- Placeholder items -->
-        <div class="card">
-            <img src="vintage radio.jpg" alt="Featured Item 1">
-            <h3>Vintage Radio</h3>
-            <p class="muted">Fully functional vintage radio, great for collectors.</p>
-            <p><strong>Availability:</strong> At Center</p>
-            <a href="#" class="button primary">Learn More</a>
-        </div>
-        <div class="card">
-            <img src="old monitor.jpg" alt="Featured Item 2">
-            <h3>Old Monitor</h3>
-            <p class="muted">CRT monitor, works but heavy. Good for retro gaming setups.</p>
-            <p><strong>Availability:</strong> At Center</p>
-            <a href="#" class="button primary">Learn More</a>
-        </div>
-        <div class="card">
-            <img src="desk lamp.webp" alt="Featured Item 3">
-            <h3>Desk Lamp</h3>
-            <p class="muted">Adjustable desk lamp, minor cosmetic wear.</p>
-            <p><strong>Availability:</strong> At Center</p>
-            <a href="#" class="button primary">Learn More</a>
-        </div>
-    </section>
-
 </main>
 
 <aside>
@@ -76,14 +49,6 @@
             <a href="#" class="button primary">Facebook</a>
             <a href="#" class="button ghost">Instagram</a>
         </div>
-    </div>
-    <div class="card">
-        <h3>Our Drop-off Center</h3>
-        <p><strong>Address:</strong> Jalan 7/23F, Taman Teratai Mewah, 53100 Kuala Lumpur, Wilayah Persekutuan Kuala
-            Lumpur, Malaysia</p>
-        <p><strong>Hours:</strong> Mon - Fri: 8 AM - 7 PM, Sat: 10 AM - 2 PM</p>
-        <p><strong>Phone:</strong> (011) 999-7890</p>
-        <a href="#" class="button ghost">Get Directions</a>
     </div>
 </aside>
 

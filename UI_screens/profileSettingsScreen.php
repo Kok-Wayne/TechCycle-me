@@ -74,8 +74,8 @@ $profileImage = !empty($user['profile_image'])
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save changes</button>
-                <a href="userHomePage.php" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="button primary">Save changes</button>
+                <a href="userHomePage.php" class="button ghost">Cancel</a>
             </div>
         </form>
     </div>

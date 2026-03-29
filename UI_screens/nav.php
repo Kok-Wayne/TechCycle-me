@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php?error=not_logged_in");
     exit;
 }
+$userID = $_SESSION['user_id'];
 
 // Get profile image
 $profileImage = $_SESSION['profile_image'] ?? '';
@@ -50,7 +51,7 @@ if (!empty($profileImage)) {
                         <a href="adminHome.php">Admin Dashboard</a>
                         <a href="manageWorkers.php">Workers</a>
                         <a href="recyclingCentre.php">Recycling Centres</a>
-                        <a href="reports.php">Reports</a>
+                        <a href="adminReports.php">Reports</a>
                         <a href="adminLogistics.php">Logistics</a>
                         <div class="profile-wrapper">
                             <div class="profile-circle" id="profileCircle">
@@ -58,15 +59,15 @@ if (!empty($profileImage)) {
                                 // Check if user has a profile image
                                 $profileImage = $_SESSION['profile_image'] ?? '';
 
-                                if (!empty($profileImage) && file_exists("../uploads/profiles/$profileImage")) {
-                                    echo "<img src='../uploads/profiles/$profileImage' alt='Profile' class='profile-img'>";
+                                if (!empty($profileImage) && file_exists("../$profileImage")) {
+                                    echo "<img src='../$profileImage' alt='Profile' class='profile-img'>";
                                 } else {
                                     echo "<img src='../Website_Images_Files/default-avatar.png' alt='Profile' class='profile-img'>";
                                 }
                                 ?>
                             </div>
                             <div class="profile-dropdown" id="profileDropdown">
-                                <a href="userProfile.php">Settings</a>
+                                <a href="profileSettingsScreen.php">Settings</a>
                                 <a href="viewUserNotificationsPage.php">Notifications</a>
                                 <a href="../php_files/logoutProcess.php">Logout</a>
                             </div>
@@ -82,44 +83,50 @@ if (!empty($profileImage)) {
                                 // Check if user has a profile image
                                 $profileImage = $_SESSION['profile_image'] ?? '';
 
-                                if (!empty($profileImage) && file_exists("../uploads/profiles/$profileImage")) {
-                                    echo "<img src='../uploads/profiles/$profileImage' alt='Profile' class='profile-img'>";
+                                if (!empty($profileImage) && file_exists("../$profileImage")) {
+                                    echo "<img src='../$profileImage' alt='Profile' class='profile-img'>";
                                 } else {
                                     echo "<img src='../Website_Images_Files/default-avatar.png' alt='Profile' class='profile-img'>";
                                 }
                                 ?>
                             </div>
                             <div class="profile-dropdown" id="profileDropdown">
-                                <a href="userProfile.php">Settings</a>
+                                <a href="profileSettingsScreen.php">Settings</a>
                                 <a href="viewUserNotificationsPage.php">Notifications</a>
                                 <a href="../php_files/logoutProcess.php">Logout</a>
                             </div>
                         </div>
                     <?php elseif ($role == 'user'): ?>
                         <a href="index.php">Home</a>
-                        <a href="#features">Features</a>
-                        <a href="recyclingCenters.php">Recycling Center</a>
+                        <a href="rankings.php">Ranks</a>
+                        <a href="dropoffRecyclingCentreSelection.php">Recycling Centre</a>
                         <a href="marketplace.php">Marketplace</a>
+                        <div class="profile-wrapper">
+                            <div class="profile-circle" id="profileCircle">
+                                <?php
+                                // Check if user has a profile image
+                                $profileImage = $_SESSION['profile_image'] ?? '';
+
+                                if (!empty($profileImage) && file_exists("../$profileImage")) {
+                                    echo "<img src='../$profileImage' alt='Profile' class='profile-img'>";
+                                } else {
+                                    echo "<img src='../Website_Images_Files/default-avatar.png' alt='Profile' class='profile-img'>";
+                                }
+                                ?>
+                            </div>
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <a href="profileSettingsScreen.php">Settings</a>
+                                <a href="cartScreen.php">Cart</a>
+                                <a href="viewUserNotificationsPage.php">Notifications</a>
+                                <a href="../php_files/logoutProcess.php">Logout</a>
+                            </div>
+                        </div>
                     <?php else: ?>
                         <a href="homescreen.php">Home</a>
                         <a href="#features">Features</a>
                         <a href="login.php">Recycling Center</a>
                         <a href="login.php">Marketplace</a>
                         <a class="cta" href="login.php">Sign in</a>
-                    <?php endif; ?>
-
-                    <?php if ($role !== 'guest'): ?>
-                        <div class="profile-wrapper">
-                            <div class="profile-circle" id="profileCircle">
-                                <img src="<?= $profilePath ?>" alt="Profile" class="profile-img">
-                            </div>
-                            <div class="profile-dropdown" id="profileDropdown">
-                                <a href="profileSettingsScreen.php">Settings</a>
-                                <?php if ($role !== 'worker') echo '<a href="cartScreen.php">Cart</a>'; ?>
-                                <a href="viewUserNotificationsPage.php">Notifications</a>
-                                <a href="../php_files/logoutProcess.php">Logout</a>
-                            </div>
-                        </div>
                     <?php endif; ?>
                 </div>
             </nav>

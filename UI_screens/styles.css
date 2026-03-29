@@ -20,7 +20,7 @@
     --bg-white: #ffffff;
     --radius: 14px;
     --gap: 1rem;
-    --maxw: 1100px;
+    --maxw: 1600px;
 }
 
 /* Base reset */
@@ -53,7 +53,6 @@ a {
     max-width: var(--maxw);
     display: grid;
     gap: var(--gap);
-    grid-template-columns: 1fr;
     grid-template-areas:
         "header"
         "nav"
@@ -75,7 +74,6 @@ header {
 
 nav {
     grid-area: nav;
-    width: 100vw;
     position: sticky;
     align-items: center;
     top: 0;
@@ -87,6 +85,7 @@ main {
     background: var(--bg-white);
     border-radius: 16px;
     padding: 1rem;
+    width: 100%;
 }
 
 aside {
@@ -771,6 +770,7 @@ h2 {
     user-select: none;
     font-size: 20px;
     overflow: hidden;
+
 }
 
 .profile-circle img.profile-img {
@@ -807,6 +807,46 @@ h2 {
 
 .profile-wrapper.active .profile-dropdown {
     display: block;
+}
+
+.profile-avatar {
+    transition: all 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+}
+
+/* Optional: slightly lift profile preview card on hover for consistency */
+.profile-preview {
+    transition: all 0.25s ease;
+}
+
+.profile-preview:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.profile-form-card {
+    transition: all 0.25s ease;
+}
+
+.profile-form-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+/* Center the profile-avatar inside preview */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 1rem;
+    border: 3px solid var(--green-leaf);
 }
 
 /* End of Profile Circle */
@@ -1913,3 +1953,79 @@ a.pickup-item:hover {
     font-size: 0.9rem;
 }
 .modal-confirm:hover { background: var(--green-dark); }
+
+/* ===============================
+   E-Waste Submission Form
+   =============================== */
+
+.ewaste-form-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 20px;
+    background: var(--bg-white);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ewaste-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.ewaste-form textarea,
+.ewaste-form select,
+.ewaste-form input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.ewaste-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.ewaste-form select:focus,
+.ewaste-form textarea:focus,
+.ewaste-form input:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(82, 173, 156, 0.25);
+}
+
+aside .card {
+    text-align: left;
+}
+
+/* End of E-Waste Submission Form Layout */
+
+
+/* ===============================
+   Thank You Page
+   =============================== */ 
+
+.thank-you-main {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.thank-you-card {
+    text-align: center;
+    max-width: 650px;
+    width: 100%;
+}
+
+.thank-you-card .actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* End of Thank You Page Layout */
+

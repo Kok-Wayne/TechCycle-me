@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } elseif ($row['role'] === 'worker') {
                 header("Location: ../UI_screens/workerHome.php");
             } else {
-                header("Location: ../UI_screens/userHome.php");
+                header("Location: ../UI_screens/index.php");
             }
 
             exit();

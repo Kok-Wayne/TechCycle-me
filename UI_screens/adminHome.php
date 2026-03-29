@@ -69,7 +69,7 @@ $productCount = $conn->query("SELECT COUNT(*) as total FROM products")->fetch_as
         <article class="card">
             <h3>Point Systems</h3>
             <p class="muted">See who has the most points among each user.</p>
-            <a class="button ghost" href="/gardening">Find a garden</a>
+            <a class="button ghost" href="userPointRanks.php">Check NOW!</a>
         </article>
 
         <article class="card" id="swap">
