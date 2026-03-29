@@ -75,7 +75,7 @@ if (!empty($profileImage)) {
                         <a href="workerHome.php">Dashboard</a>
                         <a href="pickups.php">Pickups</a>
                         <a href="inventory.php">Inventory</a>
-                        <a href="viewWorkerNotificationsPage.php">Notifications</a>
+                        <a href="workerCollectionTasks.php">Notifications</a>
                         <div class="profile-wrapper">
                             <div class="profile-circle" id="profileCircle">
                                 <?php

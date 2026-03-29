@@ -23,7 +23,7 @@ $productCount = $conn->query("SELECT COUNT(*) as total FROM products")->fetch_as
                 Pick up E-waste from users, manage collections, and list available items.
             </p>
             <div class="actions">
-                <a class="button primary" href="viewWorkerNotificationsPage.php">Notifications</a>
+                <a class="button primary" href="workerCollectionTasks.php">Notifications</a>
                 <a class="button ghost" href="createWorkerAcc.php">Pick Up E-Waste</a>
             </div>
         </div>
