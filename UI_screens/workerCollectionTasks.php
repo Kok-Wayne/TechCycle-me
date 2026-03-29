@@ -56,22 +56,13 @@ foreach ($allCompleted as $row) {
 }
 $hasAnyCompleted = count($allCompleted) > 0;
 ?>
-<style>
-    body { display: flex; flex-direction: column; min-height: 100vh; }
-    #content { flex: 1; }
-    a.pickup-item {
-        text-decoration: none; color: inherit; display: flex; align-items: center;
-        gap: 0.9rem; background: #fff; border: 1.5px solid #e5e7eb;
-        border-radius: 14px; padding: 0.85rem 1rem; margin-bottom: 0.65rem;
-        transition: box-shadow 0.18s, border-color 0.18s;
-    }
-    a.pickup-item:hover { box-shadow: 0 4px 16px rgba(68,118,4,0.14); border-color: #6cc551; }
-</style>
+
+<!-- .worker-task-page scopes the footer-pinning flex rules (see styles.css) -->
+<div class="worker-task-page">
 
 <main id="content">
 <div class="pickups-wrapper">
     <h1 class="pickups-title">Collection Tasks</h1>
-    <p class="pickups-subtitle">Pending is visible to all workers &nbsp;&middot;&nbsp; Completed shows only your own collections</p>
 
     <div class="pickup-tab-container">
         <button class="pickup-tab active" onclick="switchTab('pending', this)">Pending</button>
@@ -179,6 +170,8 @@ $hasAnyCompleted = count($allCompleted) > 0;
     </div>
 </div>
 </main>
+
+</div><!-- end .worker-task-page -->
 
 <script>
 function switchTab(tab, btn) {

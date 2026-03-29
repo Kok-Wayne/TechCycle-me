@@ -14,7 +14,6 @@ if ($notifID <= 0) {
     exit();
 }
 
-// ── Fetch notification (must belong to this user) ─────────────
 $stmt = $conn->prepare(
     "SELECT n.notificationID, n.title, n.message, n.createdAt, n.isRead,
             u.username AS workerName
@@ -33,7 +32,6 @@ if (!$notif) {
     exit();
 }
 
-// ── Auto-mark as read ─────────────────────────────────────────
 if ($notif['isRead'] == 0) {
     $mark = $conn->prepare(
         "UPDATE notifications SET isRead = 1
@@ -50,6 +48,8 @@ $workerName = !empty($notif['workerName'])
               : 'A worker';
 $timestamp  = date('d M Y, h:i A', strtotime($notif['createdAt']));
 ?>
+
+<div class="notif-page">
 
 <main id="content">
 <div class="nd-wrapper">
@@ -69,10 +69,8 @@ $timestamp  = date('d M Y, h:i A', strtotime($notif['createdAt']));
             <span class="nd-badge nd-badge--read">&#10003; Read</span>
         </div>
 
-        <!-- Title -->
         <h1 class="nd-title"><?= htmlspecialchars($notif['title']) ?></h1>
 
-        <!-- Meta -->
         <div class="nd-meta">
             <span class="nd-meta-item">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,7 +90,6 @@ $timestamp  = date('d M Y, h:i A', strtotime($notif['createdAt']));
 
         <hr class="nd-divider">
 
-        <!-- Full message -->
         <p class="nd-message"><?= htmlspecialchars($notif['message']) ?></p>
 
     </div>
@@ -112,97 +109,6 @@ $timestamp  = date('d M Y, h:i A', strtotime($notif['createdAt']));
 </div>
 </main>
 
-<style>
-.nd-wrapper {
-    max-width: 620px;
-    margin: 2rem auto;
-    padding: 0 1.25rem 3rem;
-}
-.nd-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-decoration: none;
-    margin-bottom: 1.5rem;
-}
-.nd-back svg   { width: 16px; height: 16px; }
-.nd-back:hover { color: var(--green-dark); }
-.nd-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 1.75rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    margin-bottom: 1rem;
-}
-.nd-status-row  { margin-bottom: 0.85rem; }
-.nd-badge {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border-radius: 20px;
-    padding: 0.15rem 0.65rem;
-}
-.nd-badge--read {
-    background: #e8f5e0;
-    color: var(--green-dark);
-    border: 1px solid #b6dda0;
-}
-.nd-title {
-    font-size: clamp(1.2rem, 3vw, 1.6rem);
-    font-weight: 800;
-    color: var(--green-dark);
-    margin: 0 0 0.85rem;
-}
-.nd-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-.nd-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.82rem;
-    color: var(--text-muted);
-}
-.nd-meta-item svg { width: 14px; height: 14px; color: var(--teal); }
-.nd-divider {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin: 0.75rem 0 1.25rem;
-}
-.nd-message {
-    font-size: 0.97rem;
-    color: var(--text-dark);
-    line-height: 1.7;
-    margin: 0;
-}
-.nd-unread-form { margin-top: 0.5rem; }
-.nd-btn-unread {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: none;
-    border: 1.5px solid #d1d5db;
-    border-radius: 10px;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: border-color 0.18s, color 0.18s, background 0.18s;
-}
-.nd-btn-unread svg   { width: 16px; height: 16px; }
-.nd-btn-unread:hover {
-    border-color: var(--green-dark);
-    color: var(--green-dark);
-    background: #f3f7f0;
-}
-</style>
+</div>
 
 <?php include __DIR__ . '/footer.php'; ?>

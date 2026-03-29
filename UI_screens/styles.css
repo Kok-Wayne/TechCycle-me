@@ -812,7 +812,7 @@ h2 {
 /* End of Profile Circle */
 
 /* ===============================
-   Collection Tasks Page (viewWorkerNotificationsPage)
+   Collection Tasks Page
    =============================== */
 
 .pickups-wrapper {
@@ -1126,6 +1126,15 @@ h2 {
    Notifications Page
    =============================== */
 
+.notif-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.notif-page > #content {
+    flex: 1;
+}
+
 .notif-wrapper {
     padding: 1.25rem;
 }
@@ -1197,6 +1206,7 @@ h2 {
     border-left: 2px solid #e5e7eb;
     margin-left: 1rem;
     margin-top: 0.25rem;
+    display: block;
 }
 
 .notif-item {
@@ -1239,7 +1249,165 @@ h2 {
     color: var(--text-muted);
 }
 
+.notif-page-title {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 0 0 1rem;
+}
+.notif-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--green-leaf);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 0.05rem 0.45rem;
+    margin-left: 0.35rem;
+    vertical-align: middle;
+}
+.notif-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+}
+.notif-card:last-child { border-bottom: none; }
+.notif-card:hover { background: #f3f7f0; }
+.notif-card--unread { background: #f7fbf3; }
+.notif-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: transparent;
+    flex-shrink: 0;
+}
+.notif-dot--active { background: var(--green-leaf); }
+.notif-card-body { flex: 1; min-width: 0; }
+.notif-card-title {
+    margin: 0 0 0.15rem;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.notif-card-title--bold { font-weight: 700; }
+.notif-card-ts {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+.notif-card-chevron {
+    width: 16px;
+    height: 16px;
+    color: #d1d5db;
+    flex-shrink: 0;
+}
+
 /* End of Notifications Page */
+
+/* ===============================
+   Notification Detail Page
+   (viewNotificationDetail.php)
+   =============================== */
+.nd-wrapper {
+    max-width: 620px;
+    margin: 2rem auto;
+    padding: 0 1.25rem 3rem;
+}
+.nd-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+}
+.nd-back svg { width: 16px; height: 16px; }
+.nd-back:hover { color: var(--green-dark); }
+.nd-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    margin-bottom: 1rem;
+}
+.nd-status-row { margin-bottom: 0.85rem; }
+.nd-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 0.15rem 0.65rem;
+}
+.nd-badge--read {
+    background: #e8f5e0;
+    color: var(--green-dark);
+    border: 1px solid #b6dda0;
+}
+.nd-title {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 0 0 0.85rem;
+}
+.nd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.nd-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+.nd-meta-item svg { width: 14px; height: 14px; color: var(--teal); }
+.nd-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 0.75rem 0 1.25rem;
+}
+.nd-message {
+    font-size: 0.97rem;
+    color: var(--text-dark);
+    line-height: 1.7;
+    margin: 0;
+}
+.nd-unread-form { margin-top: 0.5rem; }
+.nd-btn-unread {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: border-color 0.18s, color 0.18s, background 0.18s;
+}
+.nd-btn-unread svg { width: 16px; height: 16px; }
+.nd-btn-unread:hover {
+    border-color: var(--green-dark);
+    color: var(--green-dark);
+    background: #f3f7f0;
+}
 
 /*   Profile Page Styles
    =============================== */
@@ -1508,3 +1676,240 @@ h2 {
 }
 
 /* End of Cart Tab Layout */
+
+/* ===============================
+   Worker Task Page
+   =============================== */
+.worker-task-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.worker-task-page > #content {
+    flex: 1;
+}
+a.pickup-item {
+    text-decoration: none;
+    color: inherit;
+}
+a.pickup-item:hover {
+    box-shadow: 0 4px 16px rgba(68, 118, 4, 0.14);
+    border-color: #6cc551;
+}
+
+/* ===============================
+   Worker Product Detail Page
+   (workerProductDetail.php)
+   =============================== */
+.detail-wrapper {
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 0 1.25rem 3rem;
+}
+.detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 1.25rem;
+}
+.detail-back:hover { color: var(--green-dark); }
+.detail-img-wrap {
+    width: 100%;
+    background: #f3f4f6;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+}
+.detail-img-wrap img {
+    width: 100%;
+    max-height: 340px;
+    object-fit: contain;
+    display: block;
+}
+.detail-img-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 220px;
+    color: #d1d5db;
+}
+.detail-img-placeholder svg { width: 64px; height: 64px; }
+.detail-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.detail-product-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 0 0 0.25rem;
+}
+.detail-category {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--teal);
+    background: #e8f7f4;
+    border-radius: 20px;
+    padding: 0.1rem 0.6rem;
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+}
+.detail-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    font-size: 0.93rem;
+    color: var(--text-dark);
+}
+.detail-row svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--teal);
+}
+.detail-row-label {
+    font-weight: 700;
+    min-width: 80px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-top: 1px;
+}
+.detail-row-val { flex: 1; line-height: 1.5; }
+.detail-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--green-leaf);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--green-leaf);
+    border-radius: 10px;
+    transition: background 0.18s, color 0.18s;
+}
+.detail-map-link:hover { background: var(--green-leaf); color: #fff; }
+.detail-map-link svg { width: 16px; height: 16px; }
+.collected-stamp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #e8f5e0;
+    border: 1.5px solid #6cc551;
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+.collected-stamp svg { width: 20px; height: 20px; color: var(--green-leaf); }
+.detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.btn-back {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: 1.5px solid #d1d5db;
+    background: #f3f4f6;
+    color: var(--text-dark);
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.18s;
+}
+.btn-back:hover { background: #e5e7eb; }
+.btn-collect {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    background: var(--green-leaf);
+    color: #fff;
+    transition: background 0.18s;
+}
+.btn-collect:hover { background: var(--green-dark); }
+.btn-collected-done {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 1.5px solid #6cc551;
+    background: #e8f5e0;
+    color: var(--green-dark);
+    cursor: default;
+}
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+    background: #fff;
+    border-radius: 18px;
+    padding: 2rem 1.75rem;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    text-align: center;
+}
+.modal-box svg { width: 48px; height: 48px; color: #f59e0b; margin: 0 auto 1rem; display: block; }
+.modal-box h3 { margin: 0 0 0.5rem; color: var(--text-dark); font-size: 1.1rem; }
+.modal-box p { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1.5rem; }
+.modal-actions { display: flex; gap: 0.75rem; }
+.modal-cancel {
+    flex: 1;
+    padding: 0.7rem;
+    border-radius: 10px;
+    border: 1.5px solid #d1d5db;
+    background: #f3f4f6;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.modal-confirm {
+    flex: 1;
+    padding: 0.7rem;
+    border-radius: 10px;
+    border: none;
+    background: var(--green-leaf);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.modal-confirm:hover { background: var(--green-dark); }

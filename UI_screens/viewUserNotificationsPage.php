@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
 
 $userID = $_SESSION['user_id'];
 
-// No product JOIN needed — title is stored directly in notifications now
 $stmt = $conn->prepare(
     "SELECT notificationID, title, message, createdAt, isRead
      FROM notifications
@@ -20,7 +19,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-// ── Group by time period ──────────────────────────────────────
 $allGroups = [
     'Today'      => [],
     'Yesterday'  => [],
@@ -45,7 +43,6 @@ while ($row = $result->fetch_assoc()) {
     else                                                        $allGroups['Older'][]      = $row;
 }
 
-// Total unread count
 $unreadCount = 0;
 foreach ($allGroups as $items) {
     foreach ($items as $item) {
@@ -53,14 +50,12 @@ foreach ($allGroups as $items) {
     }
 }
 
-// Build unread-only groups
 $unreadGroups = [];
 foreach ($allGroups as $groupName => $items) {
     $unread = array_filter($items, fn($r) => $r['isRead'] == 0);
     if (!empty($unread)) $unreadGroups[$groupName] = array_values($unread);
 }
 
-// ── Render helper ─────────────────────────────────────────────
 function renderGroups(array $groups): void {
     $total = array_sum(array_map('count', $groups));
     if ($total === 0) {
@@ -105,6 +100,8 @@ function renderGroups(array $groups): void {
 }
 ?>
 
+<div class="notif-page">
+
 <main id="content">
 <div class="notif-wrapper">
 
@@ -130,71 +127,7 @@ function renderGroups(array $groups): void {
 </div>
 </main>
 
-<style>
-.notif-page-title {
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    font-weight: 800;
-    color: var(--green-dark);
-    margin: 0 0 1rem;
-}
-.notif-tab-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--green-leaf);
-    color: #fff;
-    font-size: 0.72rem;
-    font-weight: 700;
-    border-radius: 20px;
-    padding: 0.05rem 0.45rem;
-    margin-left: 0.35rem;
-    vertical-align: middle;
-}
-.notif-card {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
-    background: #fff;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.15s;
-}
-.notif-card:last-child  { border-bottom: none; }
-.notif-card:hover       { background: #f3f7f0; }
-.notif-card--unread     { background: #f7fbf3; }
-.notif-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: transparent;
-    flex-shrink: 0;
-}
-.notif-dot--active      { background: var(--green-leaf); }
-.notif-card-body        { flex: 1; min-width: 0; }
-.notif-card-title {
-    margin: 0 0 0.15rem;
-    font-size: 0.95rem;
-    color: var(--text-dark);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.notif-card-title--bold { font-weight: 700; }
-.notif-card-ts {
-    margin: 0;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-.notif-card-chevron {
-    width: 16px;
-    height: 16px;
-    color: #d1d5db;
-    flex-shrink: 0;
-}
-.notif-group-body       { display: block; }
-</style>
+</div>
 
 <script>
 function toggleGroup(header) {
